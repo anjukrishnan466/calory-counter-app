@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'rest_framework',
     'knox',
-     'rest_framework.authtoken',
+    'rest_framework.authtoken',
+    'corsheaders'
 
 ]
 
@@ -53,6 +54,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'Calorie_Counter_App.urls'
@@ -126,29 +129,24 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
- }
+
 REST_AUTH_TOKEN_MODEL = 'knox.models.AuthToken'
 REST_AUTH_TOKEN_CREATOR = 'project.apps.accounts.utils.create_knox_token'
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'project.apps.accounts.serializers.UserDetailsSerializer',
     'TOKEN_SERIALIZER': 'project.apps.accounts.serializers.KnoxSerializer',
+} 
+
+CORS_ALLOWED_ORIGINS = []
+CORS_ORIGIN_ALLOW_ALL = True
+ 
+REST_FRAMEWORK = {
+'DEFAULT_AUTHENTICATION_CLASSES': (
+    'rest_framework.authentication.BasicAuthentication',
+    'knox.auth.TokenAuthentication'
+), 
+'DEFAULT_PERMISSIONS_CLASSES': ( 
+    'rest_framework.permissions.AllowAny',
+)
 }
-# REST_FRAMEWORK = {
-#     # 'DEFAULT_FILTER_BACKENDS': [
-#     #     'django_filters.rest_framework.DjangoFilterBackend'
-#     # ],
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework_simplejwt.authentication.JWTAuthentication',
-#     ],
-# }
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.authentication.TokenAuthentication',
-#     ],
-# 'DEFAULT_PERMISSION_CLASSES': [
-#     'rest_framework.permissions.IsAuthenticated',
-# ]
-# }

@@ -26,6 +26,7 @@ class FoodViews(APIView):
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+#food list for admin
 @api_view(('GET',))
 def food_index(request):
     foods = Foods.objects.all().order_by('id')
@@ -40,7 +41,8 @@ def food_index(request):
             }
             all_indexes.append(food_list)  
     return response.Response(all_indexes)
-     
+
+#food store for admin
 @api_view(['POST'])
 def food_store(request):
     foods = FoodsSerializer(data=request.data)
@@ -51,6 +53,8 @@ def food_store(request):
         return Response(foods.data)
     else:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    
+#food edit for admin  
 @api_view(['POST'])  
 def food_edit(request, pk):
     foods = Foods.objects.get(pk=pk)
@@ -60,12 +64,15 @@ def food_edit(request, pk):
         return Response(data.data)
     else:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    
+#food delete for admin
 @api_view(['DELETE'])
 def food_delete(request, pk):
     foods = get_object_or_404(Foods, pk=pk)
     foods.delete()
     return Response(status=status.HTTP_202_ACCEPTED)
 
+#activity list for admin
 @api_view(('GET',))
 def activity_index(request):
     activity = Activity.objects.all().order_by('id')
@@ -77,10 +84,11 @@ def activity_index(request):
                }
             all_indexes.append(activity_list)  
     return response.Response(all_indexes)
+
+#activity store for admin
 @api_view(['POST'])
 def activity_store(request):
     activity = ActivitySerializer(data=request.data)
-    print(activity)
     if Activity.objects.filter(**request.data).exists():
         raise serializers.ValidationError('This data already exists')
     if activity.is_valid():
@@ -88,6 +96,8 @@ def activity_store(request):
         return Response(activity.data)
     else:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    
+#activity edit for admin
 @api_view(['POST'])  
 def activity_edit(request, pk):
     activity = Activity.objects.get(pk=pk)
@@ -97,13 +107,15 @@ def activity_edit(request, pk):
         return Response(data.data)
     else:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    
+#activity delete for admin
 @api_view(['DELETE'])
 def activity_delete(request, pk):
     activity = get_object_or_404(Activity, pk=pk)
     activity.delete()
     return Response(status=status.HTTP_202_ACCEPTED)
 
-
+#food data store by user approvel by admin
 @api_view(['POST'])  
 def food_approve(request, pk):
     foods = Foods.objects.get(pk=pk)
@@ -112,7 +124,9 @@ def food_approve(request, pk):
         foods.save()
         return Response("approved")
     else:
-        return Response(status=status.HTTP_404_NOT_FOUND)      
+        return Response(status=status.HTTP_404_NOT_FOUND) 
+       
+#activity data store by user approvel by admin
 @api_view(['POST'])  
 def activity_approve(request, pk):
     activity = Activity.objects.get(pk=pk)
